@@ -12,7 +12,7 @@
 #define ECHOPIN 7        // Pin to receive echo pulse 
 #define TRIGPIN 6        // Pin to send trigger pulse
 
-#define EVENT_MOVE_TOWARDS "towards"
+#define EVENT_MOVE_TOWARDS "near"
 #define EVENT_MOVE_AWAY "away"
 #define EVENT_MOVING "moving"
 #define EVENT_STATIONARY "stationary"
@@ -141,20 +141,21 @@ void loop() {
       eventToSend = EVENT_MOVE_AWAY;
     } else if (motionState == STATE_NEAR) {
       eventToSend = EVENT_MOVE_TOWARDS;
-    } else if (motionState != STATE_MOTION_NONE) {
-      eventToSend = EVENT_MOVING;
-    } else {
+    } else if (motionState == STATE_MOTION_NONE) {
       eventToSend = EVENT_STATIONARY;
     }
-    
-    String response = DEVICE_PROFILE;
-    response += ",";
-    response += eventToSend;
-    response += "\n";
-    mySerial.print(response);
 
-    lcd.clear();
-    lcd.print(response);
+    if (eventToSend.length() > 0) {
+
+      String response = DEVICE_PROFILE;
+      response += ",";
+      response += eventToSend;
+      response += "\n";
+      mySerial.print(response);
+
+      lcd.clear();
+      lcd.print(response);
+    }
   }
 
   String line = "Cmd:";
