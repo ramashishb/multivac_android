@@ -1,6 +1,7 @@
 package multivac.com.multivac;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ import java.util.TreeSet;
  */
 @Table(name="act")
 public class Act extends Model {
+    public static final String TAG = "Act";
+
     @Column(name="title")
     public String title;
 
@@ -72,10 +75,12 @@ public class Act extends Model {
 
     public static List<Act> getCurrentActs(Context context) {
         MobileEvent mobileEvent = MobileEvent.currentEvent(context);
+        Log.d(TAG, "Current mobile event: " + mobileEvent);
         List<Event> events = new Select().from(Event.class)
                 .where("time=? and day=? and location=?", mobileEvent.getTime(),
                         mobileEvent.getDay(), mobileEvent.getLocation())
                 .execute();
+        Log.d(TAG, "Current events: " + events);
         List<Act> currentActs = new ArrayList<>();
         Set<Long> actIds = new TreeSet<>();
         for (Event event: events) {

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import java.util.List;
  * Created by ramashish.baranwal on 05/06/15.
  */
 public class EventListFragment extends Fragment {
+    public static final String TAG = "EventListFragment";
+
     public EventListFragment() {}
 
     @Override
@@ -35,6 +38,7 @@ public class EventListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = events.get(position);
+                Log.d(TAG, "Clicked event: " + event);
                 List<Act> acts = event.getActs();
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 LayoutInflater layoutInflater = getActivity().getLayoutInflater();

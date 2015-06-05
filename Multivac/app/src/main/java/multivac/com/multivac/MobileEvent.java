@@ -39,6 +39,10 @@ public class MobileEvent {
         return location;
     }
 
+    public String toString() {
+        return time + "-" + day + "-" + location;
+    }
+
     /* Get events from Mobile at this moment. */
     public static MobileEvent currentEvent(Context context) {
         Date now = new Date();

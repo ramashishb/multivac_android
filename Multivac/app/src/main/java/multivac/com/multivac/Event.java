@@ -50,7 +50,7 @@ public class Event extends Model {
                 .from(Act.class)
                 .innerJoin(EventAct.class)
                 .on("act.id = eventact.act")
-                .where("eventact.act = ?", getId())
+                .where("eventact.event = ?", getId())
                 .execute();
     }
 
