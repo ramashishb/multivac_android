@@ -14,6 +14,7 @@
 
 #define EVENT_MOVE_TOWARDS "towards"
 #define EVENT_MOVE_AWAY "away"
+#define EVENT_MOVING "moving"
 #define EVENT_STATIONARY "stationary"
 
 #define STATE_MOTION_NONE "none"
@@ -22,7 +23,7 @@
 #define STATE_MOTION_TOWARDS "moving_towards"
 #define STATE_NEAR "near"
 
-#define STATIONARY_THRESHOLD 10
+#define STATIONARY_THRESHOLD 20
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 10, 5, 4, 3, 2);
@@ -34,7 +35,7 @@ int command = 0;
 //float distanceStateStart = 0.0;
 float distance = 0.0;
 
-String motionState = STATE_MOTION_NONE;
+String motionState = STATE_MOTION_AWAY;
 int stationaryCount = 0;
 
 float referenceDistance = 0;
@@ -66,27 +67,40 @@ int getDistance() {
   return distanceL;
 }
 
+int getAvgDistance() {
+  float val1 = getDistance();
+  float val2 = getDistance();
+  float val3 = getDistance();
+
+  return (val1 + val2 + val3) / 3;
+}
+
+
 void loop() {
   if (referenceDistance == 0) {
-      distance = referenceDistance = getDistance();
+    distance = referenceDistance = getAvgDistance();
   }
-  
+
   float currDistance = getDistance();
 
   float deltaMoved = (distance - currDistance);
   float absDistance = abs(deltaMoved);
 
   String newState = motionState;
-  if (absDistance > 10.0 && currDistance < referenceDistance) {
+  if (absDistance > 20.0 && currDistance < referenceDistance) {
     // so the person moved
     distance = currDistance;
-
-    if ( motionState != STATE_NEAR && deltaMoved > 0 ) {
-      newState = STATE_MOTION_TOWARDS;
-    } else if (motionState != STATE_AWAY && deltaMoved < 0) {
-      newState = STATE_MOTION_AWAY;
+    if (deltaMoved < 0) {
+      if (newState != STATE_AWAY) {
+        newState = STATE_MOTION_AWAY;
+      }
+    } else {
+      if (newState != STATE_NEAR) {
+        newState = STATE_MOTION_TOWARDS;
+      }
     }
-  } else if (absDistance < 5.0) {
+
+  } else if (absDistance < 5.0 && (motionState != STATE_AWAY && motionState != STATE_NEAR)) {
     if (++stationaryCount > STATIONARY_THRESHOLD) {
       newState = STATE_MOTION_NONE;
       stationaryCount = 0;
@@ -108,10 +122,10 @@ void loop() {
 
   if (newState == motionState) {
     // check if moved too far or too close,
-    if (motionState == STATE_MOTION_TOWARDS && currDistance <= 100.0) {
+    if (motionState == STATE_MOTION_TOWARDS && currDistance <= 80) {
       motionState = STATE_NEAR;
       shouldSendEvent = true;
-    } else if (motionState == STATE_MOTION_AWAY && currDistance > 100.0)   {
+    } else if (motionState == STATE_MOTION_AWAY && currDistance > 80)   {
       motionState = STATE_AWAY;
       shouldSendEvent = true;
     }
@@ -127,40 +141,21 @@ void loop() {
       eventToSend = EVENT_MOVE_AWAY;
     } else if (motionState == STATE_NEAR) {
       eventToSend = EVENT_MOVE_TOWARDS;
-    }      else {
+    } else if (motionState != STATE_MOTION_NONE) {
+      eventToSend = EVENT_MOVING;
+    } else {
       eventToSend = EVENT_STATIONARY;
     }
+    
     String response = DEVICE_PROFILE;
     response += ",";
     response += eventToSend;
     response += "\n";
     mySerial.print(response);
+
+    lcd.clear();
+    lcd.print(response);
   }
-
-
-
-  //if some date is sent, reads it and saves in state
-  //  if (mySerial.available() > 0) {
-  //    command = mySerial.read();
-  //    if (command != 0) {
-  //      String response;
-  //      if (command == 1 || command == 'P' || command == 'p') {
-  //        response = "car";
-  //      } else {
-  //        response = "NaN";
-  //      }
-  //
-  //      response += ",";
-  //      response += direction;
-  //      response += "\n";
-  //      mySerial.print(response);
-  //    }
-  //  } else {
-  //    if (isDebug) {
-  //      mySerial.println(direction);
-  //    }
-  //  }
-
 
   String line = "Cmd:";
   line += command;
