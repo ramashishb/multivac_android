@@ -14,6 +14,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = new CurrentActsFragment();
+        String title = "Whats Now?";
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit();
+        setTitle("Multivac - " + title);
     }
 
     @Override
@@ -38,6 +45,10 @@ public class MainActivity extends ActionBarActivity {
         String title = null;
         Fragment fragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
+        if (id == R.id.action_current_acts) {
+            fragment = new CurrentActsFragment();
+            title = "Whats Now?";
+        }
         if (id == R.id.action_acts) {
             fragment = new ActListFragment();
             title = "Actions";

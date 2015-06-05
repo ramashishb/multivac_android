@@ -39,7 +39,7 @@ public class DeviceListFragment extends Fragment {
                 final View dialogView = layoutInflater.inflate(R.layout.dialog_add_device, null);
                 final AlertDialog.Builder dialog = builder.setView(dialogView);
 
-                dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("Add Device", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String name = ((EditText) dialogView.findViewById(R.id.name)).getText().toString();
@@ -55,7 +55,7 @@ public class DeviceListFragment extends Fragment {
                             return;
                         }
 
-                        Device device = new Device();
+                        Device device = new Device(name);
                         device.save();
                         devices.clear();
                         devices.addAll(Device.getAllDevices());
