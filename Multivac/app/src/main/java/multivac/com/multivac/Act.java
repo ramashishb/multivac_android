@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
@@ -35,13 +36,17 @@ public class Act extends Model {
     @Column(name="data")
     public String data;
 
+    @Column(name="description")
+    public String description;
+
     public Act() {}
 
-    public Act(String title, String action, String name, String data) {
+    public Act(String title, String action, String name, String data, String description) {
         this.title = title;
         this.action = action;
         this.name = name;
         this.data = data;
+        this.description = description;
     }
 
     public String toString() {
@@ -61,29 +66,68 @@ public class Act extends Model {
         TextView text = (TextView) view.findViewById(R.id.title);
         text.setText(title);
 
-        TextView description = (TextView) view.findViewById(R.id.description);
-        description.setText(data);
+        TextView descriptionText = (TextView) view.findViewById(R.id.description);
+        descriptionText.setText(description);
         return view;
     }
 
-    public static List<Act> getAllActs() {
+    public static List<Act> getAllActs(boolean dummy) {
         return new Select()
                 .from(Act.class)
                 .orderBy("title ASC")
                 .execute();
     }
 
+    private static void addActs() {
+        new Act("Route to Home", "Show", "Route", "Bellandur,Whitefield", "30 minutes to Home").save();
+        new Act("Route to Office", "Show", "Route", "Whitefield,Bellandur", "50 minutes to Office").save();
+        new Act("Calendar", "Show", "Calendar", "Meeting", "10:00 AM - Goto market plan").save();
+        new Act("Fill Petrol", "Fill", "Petrol", "", "Low fuel! Get filled").save();
+    }
+
+    public static List<Act> getAllActs() {
+        List<Act> allActs = getAllActs(true);
+        if (allActs.size() == 0) {
+            addActs();
+            allActs = getAllActs(true);
+        }
+        return allActs;
+    }
+
     public static List<Act> getCurrentActs(Context context) {
         MobileEvent mobileEvent = MobileEvent.currentEvent(context);
+        List<DeviceEvent> deviceEvents = DeviceEvent.currentEvents();
+
         Log.d(TAG, "Current mobile event: " + mobileEvent);
-        List<Event> events = new Select().from(Event.class)
+        Log.d(TAG, "Current device events: " + deviceEvents);
+        From from = new Select().from(Event.class)
                 .where("time=? and day=? and location=?", mobileEvent.getTime(),
-                        mobileEvent.getDay(), mobileEvent.getLocation())
-                .execute();
-        Log.d(TAG, "Current events: " + events);
+                        mobileEvent.getDay(), mobileEvent.getLocation());
+        List<Event> allEvents = new ArrayList<>();
+        if (deviceEvents.size() > 0) {
+            Log.d(TAG, "Applying device event filter");
+            for (DeviceEvent de: deviceEvents) {
+                List<Event> events = new Select().from(Event.class)
+                        .where("device=? and state=? and time=? and day=? and location=?",
+                                de.getDevice(), de.getState(), mobileEvent.getTime(),
+                                mobileEvent.getDay(), mobileEvent.getLocation())
+                        .execute();
+                allEvents.addAll(events);
+            }
+        }
+        else {
+            Log.d(TAG, "Skipping device event filter for lack of data");
+            List<Event> events = new Select().from(Event.class)
+                    .where("time=? and day=? and location=?", mobileEvent.getTime(),
+                            mobileEvent.getDay(), mobileEvent.getLocation())
+                    .execute();
+            allEvents.addAll(events);
+        }
+        Log.d(TAG, "Current events: " + allEvents);
+
         List<Act> currentActs = new ArrayList<>();
         Set<Long> actIds = new TreeSet<>();
-        for (Event event: events) {
+        for (Event event: allEvents) {
             List<Act> acts = event.getActs();
             for (Act act: acts) {
                 if (actIds.contains(act.getId())) {
@@ -94,7 +138,7 @@ public class Act extends Model {
         }
 
         if (currentActs.isEmpty()) {
-            Act noAct = new Act("Nothing", "", "", "Nothing to show here!");
+            Act noAct = new Act("Nothing", "", "", "", "Nothing to show here!");
             currentActs.add(noAct);
         }
         return currentActs;

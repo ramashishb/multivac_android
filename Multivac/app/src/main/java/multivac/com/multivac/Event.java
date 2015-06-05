@@ -54,10 +54,30 @@ public class Event extends Model {
                 .execute();
     }
 
-    public static List<Event> getAllEvents() {
+    public static List<Event> getAllEvents(boolean dummy) {
         return new Select()
                 .from(Event.class)
                 .orderBy("title ASC")
                 .execute();
+    }
+
+    private static void addEvents() {
+        String[] weekdays = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String[] weekends = {"Saturday", "Sunday"};
+        for (String day: weekdays) {
+            new Event("Leave Home for Office: "+day, "Car", "towards", "Morning", day, "Home").save();
+            new Event("Enter Office: "+day, "Car", "away", "Morning", day, "Office").save();
+            new Event("Leave Office for Home: "+day, "Car", "towards", "Evening", day, "Office").save();
+            new Event("Enter Home: "+day, "Car", "away", "Evening", day, "Home").save();
+        }
+    }
+
+    public static List<Event> getAllEvents() {
+        List<Event> allEvents = getAllEvents(true);
+        if (allEvents.size() == 0) {
+            addEvents();
+            allEvents = getAllEvents(true);
+        }
+        return allEvents;
     }
 }

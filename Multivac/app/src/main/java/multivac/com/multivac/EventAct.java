@@ -42,10 +42,51 @@ public class EventAct extends Model {
         return null;
     }
 
-    public static List<EventAct> getAllEventActs() {
+    public static List<EventAct> getAllEventActs(boolean dummy) {
         return new Select()
                 .from(EventAct.class)
                 .orderBy("event ASC")
                 .execute();
+    }
+
+    private static void addEventActs(List<Event> events, List<Act> acts) {
+        for (Event e: events) {
+            for (Act a: acts) {
+                new EventAct(e, a).save();
+            }
+        }
+    }
+
+    private static void addEventActs() {
+        List<Event> events = Event.getAllEvents();
+        List<Act> acts = Act.getAllActs();
+
+        events = new Select().from(Event.class)
+                .where("title LIKE ?", "Leave Office for Home%").execute();
+        acts = new Select().from(Act.class)
+                .where("title = ?", "Route to Home").execute();
+        addEventActs(events, acts);
+
+        events = new Select().from(Event.class)
+                .where("device = ? and state = ?", "Car", "towards").execute();
+        acts = new Select().from(Act.class)
+                .where("title = ?", "Fill Petrol").execute();
+        addEventActs(events, acts);
+
+        events = new Select().from(Event.class)
+                .where("title LIKE ?", "Enter Office%").execute();
+        acts = new Select().from(Act.class)
+                .where("title = ?", "Calendar").execute();
+        addEventActs(events, acts);
+
+    }
+
+    public static List<EventAct> getAllEventActs() {
+        List<EventAct> allEventActs = getAllEventActs(true);
+        if (allEventActs.size() == 0) {
+            addEventActs();
+            allEventActs = getAllEventActs(true);
+        }
+        return allEventActs;
     }
 }

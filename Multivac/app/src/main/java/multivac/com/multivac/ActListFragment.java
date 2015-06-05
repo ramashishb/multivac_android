@@ -45,9 +45,11 @@ public class ActListFragment extends Fragment {
                         String action = ((EditText) dialogView.findViewById(R.id.action)).getText().toString();
                         String name = ((EditText) dialogView.findViewById(R.id.name)).getText().toString();
                         String data = ((EditText) dialogView.findViewById(R.id.data)).getText().toString();
+                        String description = ((EditText) dialogView.findViewById(R.id.description)).getText().toString();
 
                         if (title == null || title.equals("")
                                 || action == null || action.equals("")
+                                || description == null || description.equals("")
                                 || name == null || name.equals("")) {
                             Toast.makeText(getActivity(), "Missing data", Toast.LENGTH_SHORT)
                                     .show();
@@ -58,7 +60,7 @@ public class ActListFragment extends Fragment {
                         if (data == null) {
                             data = "";
                         }
-                        Act act = new Act(title, action, name, data);
+                        Act act = new Act(title, action, name, data, description);
                         act.save();
                         actions.clear();
                         actions.addAll(Act.getAllActs());
