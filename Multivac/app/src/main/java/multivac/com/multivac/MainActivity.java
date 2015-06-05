@@ -1,5 +1,7 @@
 package multivac.com.multivac;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,6 +32,19 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        Fragment fragment = null;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (id == R.id.action_acts) {
+            fragment = new ActListFragment();
+        }
+
+        if (fragment != null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                    .commit();
             return true;
         }
 
