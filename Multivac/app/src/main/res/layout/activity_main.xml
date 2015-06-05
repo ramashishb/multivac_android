@@ -5,73 +5,17 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/connected_device_label"/>-->
-
-    <!--<ListView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/paired_devices_list"></ListView>-->
-
-    <TextView
-      android:id="@+id/device_name_label"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Device Name For Connection" />
-
-    <EditText
-        android:id="@+id/device_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/device_name_label"
-        android:background="@android:drawable/editbox_background" />
-
-    <TextView
-        android:id="@+id/label"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/device_name"
-        android:text="Type here:" />
-
-    <EditText
-        android:id="@+id/entry"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/label"
-        android:background="@android:drawable/editbox_background" />
-
-    <Button
-        android:id="@+id/open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/entry"
-        android:layout_marginLeft="10dip"
-        android:text="Open" />
-
-    <Button
-        android:id="@+id/send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/open"
-        android:layout_toLeftOf="@id/open"
-        android:text="Send" />
-
-    <Button
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/send"
-        android:layout_toLeftOf="@id/send"
-        android:text="Close" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:id="@+id/status"/>
+
+
+    <FrameLayout android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 
 

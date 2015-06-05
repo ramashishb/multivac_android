@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -184,33 +185,58 @@ public class BluetoothUtil {
         readBuffer = new byte[1024];
         workerThread = new Thread(new Runnable()
         {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream(1024);
             public void run()
             {
                 while(!Thread.currentThread().isInterrupted() && !stopWorker)
                 {
+                    stream.reset();
                     try
                     {
-                        int bytesAvailable = mmInputStream.available();
-                        if(bytesAvailable > 0)
-                        {
-                            byte[] packetBytes = new byte[bytesAvailable];
-                            mmInputStream.read(packetBytes);
-                            for(int i=0;i<bytesAvailable;i++)
-                            {
-                                byte b = packetBytes[i];
-                                if(b == delimiter) {
-                                    byte[] encodedBytes = new byte[readBufferPosition];
-                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                    final String data = new String(encodedBytes, "US-ASCII");
-                                    readBufferPosition = 0;
-                                    broadCastData(data);
+//                        int bytesAvailable = mmInputStream.available();
+
+                        do {
+                            int value = mmInputStream.read();
+                            if (value > 0) {
+                                if ((char)value == '\n') {
+                                    break;
                                 }
-                                else
-                                {
-                                    readBuffer[readBufferPosition++] = b;
-                                }
+                                stream.write((byte)value);
+                            } else {
+                                break;
                             }
+                        } while (true);
+
+                        if(stream.size() >0)
+                        {
+                            broadCastData(new String(stream.toByteArray()));
                         }
+
+//                         if(bytesAvailable > 0)
+//                        {
+//                            byte[] packetBytes = new byte[bytesAvailable];
+//                            mmInputStream.read(packetBytes);
+//                            for(int i=0;i<bytesAvailable;i++)
+//                            {
+//                                byte b = packetBytes[i];
+//                                if(b == delimiter) {
+//                                    byte[] encodedBytes = new byte[readBufferPosition];
+//                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+//                                    final String data = new String(encodedBytes, "US-ASCII");
+//                                    readBufferPosition = 0;
+//                                    broadCastData(data);
+//                                }
+//                                else
+//                                {
+//                                    readBuffer[readBufferPosition++] = b;
+//                                }
+//                                Log.i("manish", " received data from device" + b);
+//                            }
+//                        }
+//                        Log.i("manish", " received data" +bytesAvailable);
+
+                       // Log.i("manish", new String(stream.toByteArray(), "US-ASCII"));
+
                     }
                     catch (IOException ex)
                     {
