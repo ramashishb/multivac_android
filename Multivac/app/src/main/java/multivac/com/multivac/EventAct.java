@@ -29,6 +29,19 @@ public class EventAct extends Model {
         return event.toString() + "->" + act.toString();
     }
 
+    public static EventAct fromEventAct(Event event, Act act) {
+        List<EventAct> eventActs = new Select()
+                .from(EventAct.class)
+                .where("event=? and act=?", event.getId(), act.getId())
+                .execute();
+        if (eventActs.size() > 0) {
+            for (int i=1; i<eventActs.size(); ++i)
+                eventActs.get(i).delete();
+            return eventActs.get(0);
+        }
+        return null;
+    }
+
     public static List<EventAct> getAllEventActs() {
         return new Select()
                 .from(EventAct.class)

@@ -56,6 +56,11 @@ public class EventActListFragment extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Event event = (Event) eventSpinner.getSelectedItem();
                         Act act = (Act) actSpinner.getSelectedItem();
+                        if (EventAct.fromEventAct(event, act) != null) {
+                            Toast.makeText(getActivity(), "Mapping exists", Toast.LENGTH_SHORT);
+                            dialogInterface.dismiss();
+                            return;
+                        }
                         EventAct eventAct = new EventAct(event, act);
                         eventAct.save();
                         eventActs.clear();
