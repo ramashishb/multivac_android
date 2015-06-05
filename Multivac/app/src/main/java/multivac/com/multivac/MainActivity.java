@@ -35,16 +35,31 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+        String title = null;
         Fragment fragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (id == R.id.action_acts) {
             fragment = new ActListFragment();
+            title = "Actions";
+        }
+        else if (id == R.id.action_events) {
+            fragment = new EventListFragment();
+            title = "Events";
+        }
+        else if (id == R.id.action_eventacts) {
+            fragment = new EventActListFragment();
+            title = "Events:Actions";
+        }
+        else if (id == R.id.action_devices) {
+            fragment = new DeviceListFragment();
+            title = "Devices";
         }
 
         if (fragment != null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();
+            setTitle("Multivac - " + title);
             return true;
         }
 

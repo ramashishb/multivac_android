@@ -15,8 +15,8 @@ public class Event extends Model {
     @Column(name="title")
     public String title;
 
-    @Column(name="code")
-    public int code;
+    @Column(name="device")
+    public String device;
 
     @Column(name="state")
     public String state;
@@ -30,12 +30,34 @@ public class Event extends Model {
     @Column(name="location")
     public String location;
 
+    public Event() {}
+
+    public Event(String title, String device, String state, String time, String day, String location) {
+        this.title = title;
+        this.device = device;
+        this.state = state;
+        this.time = time;
+        this.day = day;
+        this.location = location;
+    }
+
+    public String toString() {
+        return title;
+    }
+
     public List<Act> getActs() {
         return new Select()
                 .from(Act.class)
                 .innerJoin(EventAct.class)
                 .on("act.id = eventact.act")
                 .where("eventact.act = ?", getId())
+                .execute();
+    }
+
+    public static List<Event> getAllEvents() {
+        return new Select()
+                .from(Event.class)
+                .orderBy("title ASC")
                 .execute();
     }
 }

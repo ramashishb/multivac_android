@@ -3,6 +3,9 @@ package multivac.com.multivac;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+
+import java.util.List;
 
 /**
  * Created by ramashish.baranwal on 05/06/15.
@@ -20,5 +23,16 @@ public class EventAct extends Model {
     public EventAct(Event event, Act act) {
         this.event = event;
         this.act = act;
+    }
+
+    public String toString() {
+        return event.toString() + "->" + act.toString();
+    }
+
+    public static List<EventAct> getAllEventActs() {
+        return new Select()
+                .from(EventAct.class)
+                .orderBy("event ASC")
+                .execute();
     }
 }

@@ -37,7 +37,7 @@ public class Act extends Model {
         return title;
     }
 
-    public static List<Act> getActs() {
+    public static List<Act> getAllActs() {
         return new Select()
                 .from(Act.class)
                 .orderBy("title ASC")
