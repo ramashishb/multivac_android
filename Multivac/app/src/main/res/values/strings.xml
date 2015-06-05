@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Multivac</string>
 
+    <string name="connected_device_label">Connected Device</string>
+
+    <string name="paired_device_label">Paired Device</string>
     <string name="action_settings">Settings</string>
 </resources>
