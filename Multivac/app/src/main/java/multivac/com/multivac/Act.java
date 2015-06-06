@@ -71,6 +71,21 @@ public class Act extends Model {
         return view;
     }
 
+    public void updateAct(Context context) {
+        if ("Show".equals(action) && "Route".equals(name)) {
+            // FIXME, running in UI thread
+            String[] srcDest = data.split(",");
+            MapUtils mapUtils = new MapUtils(context);
+            MapUtils.DirectionResult directionResult = mapUtils.getDirections(srcDest[0], srcDest[1]);
+            if (directionResult != null) {
+                description = "To " + srcDest[1]
+                        + "\nDistance: " + ((float) directionResult.distanceMeters) / 1000
+                        + "\nTime to reach: " + directionResult.durationSeconds / 60 + " minutes";
+                save();
+            }
+        }
+    }
+
     public static List<Act> getAllActs(boolean dummy) {
         return new Select()
                 .from(Act.class)

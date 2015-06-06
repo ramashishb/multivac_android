@@ -31,10 +31,15 @@ public class CurrentActsFragment extends Fragment {
     public CurrentActsFragment() {}
 
     public void update(DeviceEvent de) {
-        DeviceEvent.addDeviceEvent(de);
+        if (de != null) {
+            DeviceEvent.addDeviceEvent(de);
+        }
         List<Act> currentActs = Act.getCurrentActs(getActivity());
         mCurrentActs.clear();
         mCurrentActs.addAll(currentActs);
+        for (Act act: mCurrentActs) {
+            act.updateAct(getActivity());
+        }
         if (mCurrentActListAdapter != null) {
             mCurrentActListAdapter.notifyDataSetChanged();
         }
@@ -45,11 +50,9 @@ public class CurrentActsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_current_acts_list, container, false);
         final ListView curActListView = (ListView) rootView.findViewById(R.id.current_act_list);
-        List<Act> currentActs = Act.getCurrentActs(getActivity());
-        mCurrentActs.clear();
-        mCurrentActs.addAll(currentActs);
         mCurrentActListAdapter = new CurrentActListAdapter(getActivity(), mCurrentActs);
         curActListView.setAdapter(mCurrentActListAdapter);
+        update(null);
         return rootView;
     }
 }

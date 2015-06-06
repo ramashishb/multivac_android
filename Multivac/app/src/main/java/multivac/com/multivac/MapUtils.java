@@ -1,6 +1,10 @@
 package multivac.com.multivac;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,12 +20,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * Created by shashwat on 06/06/15.
  */
 public class MapUtils {
     private final String URL = "http://maps.googleapis.com/maps/api/directions/json?";
+
+    Context mContext;
 
     public static class DirectionResult {
         public final long distanceMeters;
@@ -31,6 +38,10 @@ public class MapUtils {
             this.distanceMeters = distanceMeters;
             this.durationSeconds = durationSeconds;
         }
+    }
+
+    public MapUtils(Context context) {
+        mContext = context;
     }
 
     public DirectionResult getDirections(Location start, Location end) throws JSONException {
@@ -51,11 +62,50 @@ public class MapUtils {
 
                 return new DirectionResult(distanceInMeters, durationSeconds);
             }
-
         }
         return null;
     }
 
+    public Location getLocation(String address) {
+        Geocoder geocoder = new Geocoder(mContext);
+        List addressList = null;
+        try {
+            addressList = geocoder.getFromLocationName(address, 1);
+        }
+        catch (IOException e) {
+            Log.e("MapUtils", "Couldn't get location information for " + address);
+        }
+        if (addressList != null && addressList.size() > 0) {
+            Address addressResult = (Address) addressList.get(0);
+            Location locationResult = new Location("dummyProvider");
+            locationResult.setLatitude(addressResult.getLatitude());
+            locationResult.setLongitude(addressResult.getLongitude());
+            return locationResult;
+        }
+        else {
+            Log.e("MapUtils", "Couldn't get location information for " + address);
+        }
+        return null;
+    }
+
+    public DirectionResult getDirections(String start, String end) {
+        Location startLocation = getLocation(start);
+        Location endLocation = getLocation(end);
+
+        if (startLocation == null || endLocation == null) {
+            Log.e("MapUtils", "Couldn't get location information from "+start+" to "+end);
+            return null;
+        }
+
+        DirectionResult result = null;
+        try {
+            result = getDirections(startLocation, endLocation);
+        }
+        catch (JSONException e) {
+            Log.e("MapUtils", "Couldn't get directions from "+start+" to "+end);
+        }
+        return result;
+    }
 
     public JSONObject getJSONFromURL(String url) throws JSONException {
         try {
