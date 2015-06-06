@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -120,7 +121,11 @@ public class BluetoothUtil {
     };
 
     public static void tryConnectingPairedDevices(){
-      connected = 0;
+        connected = 0;
+        if (!isBluetoothSupported()) {
+            Log.e("BluetoothUtil", "Bluetooth not supported on this device");
+            return;
+        }
         pairedDevices = mBluetoothAdapter.getBondedDevices();
         if(pairedDevices.size() > 0) {
             for (BluetoothDevice device : pairedDevices) {
