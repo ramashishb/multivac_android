@@ -10,7 +10,7 @@ public class DeviceEvent {
     private String device, state;
 
     public DeviceEvent() {}
-
+    private static List<DeviceEvent> events = new ArrayList<>();
     public DeviceEvent(String device, String state) {
         this.device = device;
         this.state = state;
@@ -28,8 +28,14 @@ public class DeviceEvent {
         return state;
     }
 
+
+    public static void addDeviceEvent(DeviceEvent event){
+        events.clear();
+        events.add(event);
+    }
+
     public static List<DeviceEvent> currentEvents() {
-        List<DeviceEvent> events = new ArrayList<>();
+
         // TODO
         return events;
     }

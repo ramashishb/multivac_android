@@ -128,6 +128,7 @@
     <orderEntry type="library" exported="" name="play-services-wallet-7.5.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-7.5.0" level="project" />
+    <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="play-services-appstate-7.5.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-7.5.0" level="project" />
     <orderEntry type="library" exported="" name="activeandroid-3.1.0-SNAPSHOT" level="project" />

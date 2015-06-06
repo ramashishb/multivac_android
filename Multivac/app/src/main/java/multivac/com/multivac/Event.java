@@ -65,10 +65,10 @@ public class Event extends Model {
         String[] weekdays = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         String[] weekends = {"Saturday", "Sunday"};
         for (String day: weekdays) {
-            new Event("Leave Home for Office: "+day, "Car", "towards", "Morning", day, "Home").save();
-            new Event("Enter Office: "+day, "Car", "away", "Morning", day, "Office").save();
-            new Event("Leave Office for Home: "+day, "Car", "towards", "Evening", day, "Office").save();
-            new Event("Enter Home: "+day, "Car", "away", "Evening", day, "Home").save();
+            new Event("Leave Home for Office: "+day, "car", "near", "Morning", day, "Home").save();
+            new Event("Enter Office: "+day, "car", "away", "Morning", day, "Office").save();
+            new Event("Leave Office for Home: "+day, "car", "near", "Evening", day, "Office").save();
+            new Event("Enter Home: "+day, "car", "away", "Evening", day, "Home").save();
         }
     }
 

@@ -10,13 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.IOException;
 
 import multivac.com.multivac.util.BluetoothUtil;
 
@@ -33,7 +27,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = new CurrentActsFragment();
+        Fragment fragment = CurrentActsFragment.getInstance();
         String title = "Whats Now?";
         fragmentManager.beginTransaction().replace(R.id.container, fragment)
                 .commit();
@@ -96,18 +90,24 @@ public class MainActivity extends ActionBarActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             String data = intent.getStringExtra("data");
-            if(data == "1")
+            if (data == null)
+            {
+                return;
+            }
+            if("1".equals(data))
             {
                 //Toast.makeText(getApplicationContext(), "Connect", Toast.LENGTH_LONG).show();
                 status.setText("Connected");
             }
-            else if(data == "0")
+            else if("0".equals(data))
             {
                 //Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
                 status.setText("Disconnected");
             }
             else
             {
+                String[] dataArray = data.split(",");
+                CurrentActsFragment.getInstance().update(new DeviceEvent(dataArray[0],dataArray[1]));
                 status.setText(data);
             }
         }
@@ -138,7 +138,7 @@ public class MainActivity extends ActionBarActivity
         Fragment fragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (id == R.id.action_current_acts) {
-            fragment = new CurrentActsFragment();
+            fragment = CurrentActsFragment.getInstance();
             title = "Whats Now?";
         }
         if (id == R.id.action_acts) {
