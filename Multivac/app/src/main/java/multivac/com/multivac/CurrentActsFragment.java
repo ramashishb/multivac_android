@@ -1,7 +1,10 @@
 package multivac.com.multivac;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,8 @@ public class CurrentActsFragment extends Fragment {
 
     private List<Act> mCurrentActs = new ArrayList<>();
     private CurrentActListAdapter mCurrentActListAdapter;
+    private ProgressDialog progressDialog = null;
+
 
     private static CurrentActsFragment sInstance;
 
@@ -34,15 +39,12 @@ public class CurrentActsFragment extends Fragment {
         if (de != null) {
             DeviceEvent.addDeviceEvent(de);
         }
-        List<Act> currentActs = Act.getCurrentActs(getActivity());
-        mCurrentActs.clear();
-        mCurrentActs.addAll(currentActs);
-        for (Act act: mCurrentActs) {
-            act.updateAct(getActivity());
+
+        if (progressDialog != null) {
+            progressDialog.show();
         }
-        if (mCurrentActListAdapter != null) {
-            mCurrentActListAdapter.notifyDataSetChanged();
-        }
+        UpdateActTask task = new UpdateActTask();
+        task.execute();
     }
 
     @Override
@@ -53,6 +55,36 @@ public class CurrentActsFragment extends Fragment {
         mCurrentActListAdapter = new CurrentActListAdapter(getActivity(), mCurrentActs);
         curActListView.setAdapter(mCurrentActListAdapter);
         update(null);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
         return rootView;
+    }
+
+    private class UpdateActTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            Integer count = 0;
+            List<Act> currentActs = Act.getCurrentActs(getActivity());
+            for (Act act: currentActs) {
+                if (act.updateAct(getActivity())) {
+                    count += 1;
+                }
+            }
+            mCurrentActs.clear();
+            mCurrentActs.addAll(currentActs);
+            Log.d("CurrentActsFragment", "Updated "+count+ " actions");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (mCurrentActListAdapter != null) {
+                mCurrentActListAdapter.notifyDataSetChanged();
+            }
+            if (progressDialog != null) {
+                progressDialog.hide();
+            }
+        }
     }
 }

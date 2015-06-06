@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import multivac.com.multivac.config.Config;
+
 /**
  * Created by ramashish.baranwal on 05/06/15.
  */
@@ -71,19 +73,37 @@ public class Act extends Model {
         return view;
     }
 
-    public void updateAct(Context context) {
+    private String getLocationInfo(String name) {
+        String address = null;
+        if ("Home".equalsIgnoreCase(name)) {
+            address = Config.getInstance().getHomeAddress();
+        }
+        else if("Office".equalsIgnoreCase(name)) {
+            address = Config.getInstance().getOfficeAddress();
+        }
+        if (address != null) {
+            return address;
+        }
+        return name;
+    }
+
+    public boolean updateAct(Context context) {
         if ("Show".equals(action) && "Route".equals(name)) {
-            // FIXME, running in UI thread
             String[] srcDest = data.split(",");
+            Log.d("Act", "Getting route from "+srcDest[0]+" to "+srcDest[1]);
+            String src = getLocationInfo(srcDest[0]), dest = getLocationInfo(srcDest[1]);
+
             MapUtils mapUtils = new MapUtils(context);
-            MapUtils.DirectionResult directionResult = mapUtils.getDirections(srcDest[0], srcDest[1]);
+            MapUtils.DirectionResult directionResult = mapUtils.getDirections(src, dest);
             if (directionResult != null) {
                 description = "To " + srcDest[1]
                         + "\nDistance: " + ((float) directionResult.distanceMeters) / 1000
                         + "\nTime to reach: " + directionResult.durationSeconds / 60 + " minutes";
                 save();
+                return true;
             }
         }
+        return false;
     }
 
     public static List<Act> getAllActs(boolean dummy) {
@@ -94,8 +114,8 @@ public class Act extends Model {
     }
 
     private static void addActs() {
-        new Act("Route to Home", "Show", "Route", "Bellandur,Whitefield", "30 minutes to Home").save();
-        new Act("Route to Office", "Show", "Route", "Whitefield,Bellandur", "50 minutes to Office").save();
+        new Act("Route to Home", "Show", "Route", "Office,Home", "30 minutes to Home").save();
+        new Act("Route to Office", "Show", "Route", "Home,Office", "50 minutes to Office").save();
         new Act("Calendar", "Show", "Calendar", "Meeting", "10:00 AM - Goto market plan").save();
         new Act("Fill Petrol", "Fill", "Petrol", "", "Low fuel! Get filled").save();
     }
@@ -156,6 +176,8 @@ public class Act extends Model {
             Act noAct = new Act("Nothing", "", "", "", "Nothing to show here!");
             currentActs.add(noAct);
         }
+
+        Log.d(TAG, "Current acts: " + currentActs);
         return currentActs;
     }
 }

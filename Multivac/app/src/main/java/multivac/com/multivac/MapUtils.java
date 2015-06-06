@@ -67,7 +67,16 @@ public class MapUtils {
     }
 
     public Location getLocation(String address) {
+        if (mContext == null) {
+            Log.e("MapUtils", "Null context!!");
+            return null;
+        }
+
         Geocoder geocoder = new Geocoder(mContext);
+        if (geocoder == null) {
+            Log.e("MapUtils", "Null geocoder");
+            return null;
+        }
         List addressList = null;
         try {
             addressList = geocoder.getFromLocationName(address, 1);
@@ -89,8 +98,27 @@ public class MapUtils {
     }
 
     public DirectionResult getDirections(String start, String end) {
-        Location startLocation = getLocation(start);
-        Location endLocation = getLocation(end);
+        String[] startTokens = start.split(",");
+        String[] endTokens = end.split(",");
+        Location startLocation = null, endLocation = null;
+        if (startTokens.length == 2 && endTokens.length == 2) {
+            try {
+                startLocation = new Location("dummyProvider");
+                startLocation.setLatitude(Float.parseFloat(startTokens[0]));
+                startLocation.setLongitude(Float.parseFloat(startTokens[1]));
+
+                endLocation = new Location("dummyProvider");
+                endLocation.setLatitude(Float.parseFloat(endTokens[0]));
+                endLocation.setLongitude(Float.parseFloat(endTokens[1]));
+            }
+            catch (Exception e) {
+                Log.e("MapUtils", "Error parsing Latlong " + e);
+            }
+        }
+        else {
+            startLocation = getLocation(start);
+            endLocation = getLocation(end);
+        }
 
         if (startLocation == null || endLocation == null) {
             Log.e("MapUtils", "Couldn't get location information from "+start+" to "+end);

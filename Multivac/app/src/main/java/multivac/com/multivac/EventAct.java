@@ -68,7 +68,7 @@ public class EventAct extends Model {
         addEventActs(events, acts);
 
         events = new Select().from(Event.class)
-                .where("device = ? and state = ?", "Car", "towards").execute();
+                .where("device = ? and state = ?", "car", "near").execute();
         acts = new Select().from(Act.class)
                 .where("title = ?", "Fill Petrol").execute();
         addEventActs(events, acts);

@@ -62,13 +62,17 @@ public class Event extends Model {
     }
 
     private static void addEvents() {
-        String[] weekdays = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String[] weekdays = {"Friday", "Saturday"};
         String[] weekends = {"Saturday", "Sunday"};
         for (String day: weekdays) {
-            new Event("Leave Home for Office: "+day, "car", "near", "Morning", day, "Home").save();
-            new Event("Enter Office: "+day, "car", "away", "Morning", day, "Office").save();
-            new Event("Leave Office for Home: "+day, "car", "near", "Evening", day, "Office").save();
-            new Event("Enter Home: "+day, "car", "away", "Evening", day, "Home").save();
+            new Event("Leave Home for Office at Morning: "+day, "car", "near", "Morning", day, "Home").save();
+            new Event("Enter Office at Morning: "+day, "car", "away", "Morning", day, "Office").save();
+            new Event("Enter Office at Noon: "+day, "car", "away", "Noon", day, "Office").save();
+            new Event("Enter Office at Evening: "+day, "car", "away", "Evening", day, "Office").save();
+            new Event("Leave Office for Home at Morning: "+day, "car", "near", "Morning", day, "Office").save();
+            new Event("Leave Office for Home at Noon: "+day, "car", "near", "Noon", day, "Office").save();
+            new Event("Leave Office for Home at Evening: "+day, "car", "near", "Evening", day, "Office").save();
+            new Event("Enter Home at Evening: "+day, "car", "away", "Evening", day, "Home").save();
         }
     }
 

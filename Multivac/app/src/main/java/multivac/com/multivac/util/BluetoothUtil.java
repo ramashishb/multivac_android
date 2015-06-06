@@ -318,13 +318,14 @@ public class BluetoothUtil {
     };
 
     private static void connected(){
+        Log.d("BluetoothUtil", "Broadcasting connect");
         broadCastConnected();
         connected = 1;
         service.stopPollingForDevice();
     }
 
     private static void disconnected(){
-
+        Log.d("BluetoothUtil", "Broadcasting disconnect");
         broadCastDisconnected();
         connected = 0;
         mmDevice = null;
@@ -359,13 +360,13 @@ public class BluetoothUtil {
     private static void broadCastConnected(){
         Intent intent = new Intent();
         intent.setAction("multivacEvents");
-        intent.putExtra("data", 1);
+        intent.putExtra("data", "1");
         mApplicationContext.sendBroadcast(intent);
     }
     private static void broadCastDisconnected(){
         Intent intent = new Intent();
         intent.setAction("multivacEvents");
-        intent.putExtra("data", 0);
+        intent.putExtra("data", "0");
         mApplicationContext.sendBroadcast(intent);
     }
 }

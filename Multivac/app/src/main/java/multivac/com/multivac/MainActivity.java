@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import multivac.com.multivac.config.Config;
 import multivac.com.multivac.util.BluetoothUtil;
@@ -19,7 +21,7 @@ import multivac.com.multivac.util.BluetoothUtil;
 public class MainActivity extends ActionBarActivity
 {
     TextView status;
-
+    private static final String TAG = "MainActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -94,16 +96,19 @@ public class MainActivity extends ActionBarActivity
             String data = intent.getStringExtra("data");
             if (data == null)
             {
+                Log.w(TAG, "Null data in BroadcastReceiver");
                 return;
             }
             if("1".equals(data))
             {
-                //Toast.makeText(getApplicationContext(), "Connect", Toast.LENGTH_LONG).show();
+                Log.w(TAG, "Bluetooth connected");
+                Toast.makeText(getApplicationContext(), "Connect", Toast.LENGTH_LONG).show();
                 status.setText("Connected");
             }
             else if("0".equals(data))
             {
-                //Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
+                Log.w(TAG, "Bluetooth disconnected");
+                Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
                 status.setText("Disconnected");
             }
             else
