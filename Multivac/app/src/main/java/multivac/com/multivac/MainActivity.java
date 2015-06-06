@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -49,6 +50,9 @@ public class MainActivity extends ActionBarActivity
         BluetoothUtil.enableBluetooth(this);
         IntentFilter filter = new IntentFilter("multivacEvents");
         registerReceiver(receiver,filter);
+
+        // Lock to portrait orientation
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //Open Button
 //        openButton.setOnClickListener(new View.OnClickListener()
 //        {

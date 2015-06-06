@@ -57,7 +57,7 @@ public class CurrentActsFragment extends Fragment {
         update(null);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         return rootView;
     }
 
