@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import multivac.com.multivac.config.Config;
 import multivac.com.multivac.util.BluetoothUtil;
 
 
@@ -25,6 +26,7 @@ public class MainActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Config.getInstance().initialize(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = CurrentActsFragment.getInstance();
@@ -157,7 +159,10 @@ public class MainActivity extends ActionBarActivity
             fragment = new DeviceListFragment();
             title = "Devices";
         }
-
+        else if (id == R.id.action_address) {
+            fragment = new AddressFragment();
+            title = "Devices";
+        }
         if (fragment != null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)

@@ -6,16 +6,19 @@
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_acts"
         android:title="Actions"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/action_events"
         android:title="Events"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/action_eventacts"
         android:title="Events -> Actions"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:id="@+id/action_devices"
         android:title="Devices"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+    <item android:id="@+id/action_address"
+        android:title="Address"
+        app:showAsAction="never" />
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
